@@ -21,8 +21,7 @@ const calculateWinner = (squares: string[]) => {
 }
 
 const Board = () => {
-	// eslint-disable-next-line array-callback-return
-	const [squares, setSquares] = useState(Array.from({ length: 9 }, () => {}))
+	const [squares, setSquares] = useState(Array.from({ length: 9 }, () => ''))
 
 	const [xIsNext, setXIsNext] = useState(true)
 
