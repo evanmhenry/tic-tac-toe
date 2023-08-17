@@ -1,3 +1,5 @@
-const App = () => <div>Example</div>
+import Board from './components/Board'
+
+const App = () => <Board />
 
 export default App
