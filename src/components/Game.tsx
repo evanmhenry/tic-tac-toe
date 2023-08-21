@@ -21,6 +21,10 @@ const Game = () => {
 	}
 
 	const moves = history.map((squares: string[], move: number) => {
+		if (move === currentMove) {
+			return <li key={squares[move]}>You are at move #{move}</li>
+		}
+
 		const description = move > 0 ? `Go to move #${move}` : 'Go to game start'
 		return (
 			<li key={squares[move]}>
