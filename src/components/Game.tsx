@@ -1,18 +1,20 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import Board from './Board'
 
 const Game = () => {
-	const [history, setHistory] = useState([Array.from({ length: 9 }).fill(null)])
+	const [history, setHistory] = useState<string[][]>([Array.from({ length: 9 }).fill('') as string[]])
 	const [currentMove, setCurrentMove] = useState(0)
-	// eslint-disable-next-line unicorn/prefer-at
 	const currentSquares = history[currentMove]
 	const xIsNext = currentMove % 2 === 0
 
-	function handlePlay(nextSquares: string[]) {
-		const nextHistory = [...history.slice(0, currentMove + 1), nextSquares]
-		setHistory(nextHistory)
-		setCurrentMove(nextHistory.length - 1)
-	}
+	const handlePlay = useCallback(
+		(nextSquares: string[]) => {
+			const nextHistory = [...history.slice(0, currentMove + 1), nextSquares]
+			setHistory(nextHistory)
+			setCurrentMove(nextHistory.length - 1)
+		},
+		[history, currentMove],
+	)
 
 	function jumpTo(move: number) {
 		setCurrentMove(move)
@@ -21,7 +23,7 @@ const Game = () => {
 	const moves = history.map((squares: string[], move: number) => {
 		const description = move > 0 ? `Go to move #${move}` : 'Go to game start'
 		return (
-			<li key={move}>
+			<li key={squares[move]}>
 				<button type='button' onClick={() => jumpTo(move)}>
 					{description}
 				</button>
@@ -32,7 +34,7 @@ const Game = () => {
 	return (
 		<div className='game'>
 			<div className='game-board'>
-				<Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+				<Board xIsNext={xIsNext} squares={currentSquares as string[]} onPlay={handlePlay} />
 			</div>
 			<div className='game-info'>
 				<ol>{moves}</ol>
