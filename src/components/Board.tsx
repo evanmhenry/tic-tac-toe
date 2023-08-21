@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import Square from './Square'
 
 const calculateWinner = (squares: string[]) => {
@@ -20,21 +19,17 @@ const calculateWinner = (squares: string[]) => {
 	return winningLine ? squares[winningLine[0]] : undefined
 }
 
-const Board = () => {
-	const [squares, setSquares] = useState(Array.from({ length: 9 }, () => ''))
-
-	const [xIsNext, setXIsNext] = useState(true)
-
+const Board = ({ xIsNext, squares, onPlay }: { xIsNext: boolean; squares: string[]; onPlay: (squares: string[]) => void }) => {
 	const winner = calculateWinner(squares)
 	const status = winner ? `Winner: ${winner}` : `Next player: ${xIsNext ? 'X' : 'O'}`
 
-	const handleClick = (squareIndex: number) => {
-		if (!squares[squareIndex] && !calculateWinner(squares)) {
-			const nextSquares = [...squares]
-			nextSquares[squareIndex] = xIsNext ? 'X' : 'O'
-			setSquares(nextSquares)
-			setXIsNext(!xIsNext)
+	const handleClick = (square: number) => {
+		if (calculateWinner(squares) || squares[square]) {
+			return
 		}
+		const nextSquares = [...squares]
+		nextSquares[square] = xIsNext ? 'X' : 'O'
+		onPlay(nextSquares)
 	}
 
 	return (

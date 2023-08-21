@@ -1,5 +1,5 @@
-import Board from './components/Board'
+import Game from './components/Game'
 
-const App = () => <Board />
+const App = () => <Game />
 
 export default App
