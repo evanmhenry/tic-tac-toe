@@ -2,15 +2,17 @@ import { useCallback, useState } from 'react'
 import Board from './Board'
 
 const Game = () => {
-	const [history, setHistory] = useState<string[][]>([Array.from({ length: 9 }).fill('') as string[]])
+	const [history, setHistory] = useState<{ squares: string[]; lastMoveIndex: number | undefined }[]>([
+		{ squares: Array.from({ length: 9 }, () => '') as string[], lastMoveIndex: undefined },
+	])
 	const [currentMove, setCurrentMove] = useState(0)
 	const [isAscending, setIsAscending] = useState(true)
 	const currentSquares = history[currentMove]
 	const xIsNext = currentMove % 2 === 0
 
 	const handlePlay = useCallback(
-		(nextSquares: string[]) => {
-			const nextHistory = [...history.slice(0, currentMove + 1), nextSquares]
+		(nextSquares: string[], moveIndex: number) => {
+			const nextHistory = [...history.slice(0, currentMove + 1), { squares: nextSquares, lastMoveIndex: moveIndex }]
 			setHistory(nextHistory)
 			setCurrentMove(nextHistory.length - 1)
 		},
@@ -27,14 +29,16 @@ const Game = () => {
 
 	const orderedHistory = isAscending ? history : [...history].reverse()
 
-	const moves = orderedHistory.map((_squares: string[], index: number) => {
+	const moves = orderedHistory.map((entry, index) => {
 		const move = isAscending ? index : history.length - 1 - index
+		const row = Math.floor(entry.lastMoveIndex! / 3) + 1
+		const col = (entry.lastMoveIndex! % 3) + 1
 
 		if (move === currentMove) {
 			return <li key={move}>You are at move #{move}</li>
 		}
 
-		const description = move > 0 ? `Go to move #${move}` : 'Go to game start'
+		const description = move === 0 ? 'Go to game start' : `Go to move #${move} (${row}, ${col})`
 		return (
 			<li key={move}>
 				<button type='button' onClick={() => jumpTo(move)}>
@@ -47,7 +51,7 @@ const Game = () => {
 	return (
 		<div className='game'>
 			<div className='game-board'>
-				<Board xIsNext={xIsNext} squares={currentSquares as string[]} onPlay={handlePlay} />
+				<Board xIsNext={xIsNext} squaresData={currentSquares} onPlay={handlePlay} />
 			</div>
 			<div className='game-info'>
 				<button type='button' onClick={toggleSort}>

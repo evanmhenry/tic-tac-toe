@@ -1,5 +1,6 @@
 import Square from './Square'
 
+// eslint-disable-next-line consistent-return
 const calculateWinner = (squares: string[]) => {
 	const lines = [
 		[0, 1, 2],
@@ -29,7 +30,16 @@ function isBoardFull(squares: string[]) {
 	return squares.every(Boolean)
 }
 
-const Board = ({ xIsNext, squares, onPlay }: { xIsNext: boolean; squares: string[]; onPlay: (squares: string[]) => void }) => {
+const Board = ({
+	xIsNext,
+	squaresData,
+	onPlay,
+}: {
+	xIsNext: boolean
+	squaresData: { squares: string[]; lastMoveIndex: number | undefined }
+	onPlay: (squares: string[], index: number) => void
+}) => {
+	const { squares } = squaresData
 	const result = calculateWinner(squares)
 	const winner = result?.winner
 	const winningLine = result?.winningLine
@@ -46,13 +56,13 @@ const Board = ({ xIsNext, squares, onPlay }: { xIsNext: boolean; squares: string
 		status = `Next player: ${xIsNext ? 'X' : 'O'}`
 	}
 
-	const handleClick = (square: number) => {
-		if (calculateWinner(squares) || squares[square]) {
+	const handleClick = (index: number) => {
+		if (calculateWinner(squares) || squares[index]) {
 			return
 		}
 		const nextSquares = [...squares]
-		nextSquares[square] = xIsNext ? 'X' : 'O'
-		onPlay(nextSquares)
+		nextSquares[index] = xIsNext ? 'X' : 'O'
+		onPlay(nextSquares, index)
 	}
 
 	return (
