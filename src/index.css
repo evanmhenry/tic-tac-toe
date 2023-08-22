@@ -92,6 +92,10 @@ body {
 	cursor: pointer;
 }
 
+.square-winner {
+	background: #fec84b;
+}
+
 .board-row:after {
 	clear: both;
 	content: '';

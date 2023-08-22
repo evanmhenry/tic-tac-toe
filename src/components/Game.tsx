@@ -27,7 +27,7 @@ const Game = () => {
 
 	const orderedHistory = isAscending ? history : [...history].reverse()
 
-	const moves = orderedHistory.map((squares: string[], index: number) => {
+	const moves = orderedHistory.map((_squares: string[], index: number) => {
 		const move = isAscending ? index : history.length - 1 - index
 
 		if (move === currentMove) {
